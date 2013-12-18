@@ -1,0 +1,155 @@
+<?php
+/**
+ * Takhtegaz Crawler Mailer.
+ *
+ * Call:
+ * php path/to/mailer --email=EMAIL_ADDRESS --dir=INPUT_DIR --subdir=INPUT_SUBDIR --rmsubdir
+ *
+ * Options:
+ * --help:     Prints out crawler help
+ * --email:    Email address to send the crawler report to
+ * --dir:      Directory path of crawler files
+ * --subdir:   Subdirectory to look in instead of date("ymd")
+ * --rmsubdir: Purge subdirectory and its input files after successfull merge
+ *
+ * @package		TakhtegazCrawler
+ * @category	Core
+ * @author		Sepehr Lajevardi <me@sepehr.ws>
+ * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @license		WTFPL - http://www.wtfpl.net/txt/copying/
+ * @version		1.0
+ * @filesource
+ */
+
+// ------------------------------------------------------------------------
+// Init
+// ------------------------------------------------------------------------
+define('PATH', rtrim(dirname(__FILE__), '/') . '/../');
+define('FS',   realpath(PATH) . '/');
+
+// Configs and helpers
+require_once PATH . 'core/configs.php';
+require_once PATH . 'core/helpers.php';
+
+// Vendors
+require_once PATH . 'vendor/cli.php';
+require_once PATH . 'vendor/mailer/swift/swift_required.php';
+
+// Instantiate a new CLI interface
+$cli = $GLOBALS['cli'] = new CLI();
+
+// Help?
+if ($cli->option('help', FALSE))
+{
+	help_mailer();
+	exit;
+}
+
+// Announce
+$cli->h1('Takhtegaz Crawler Mailer —— Version ' . VERSION . ' // ' . date('D, M j, Y - H:i'));
+$cli->info('Loading requirements, setting up environment...');
+
+// ------------------------------------------------------------------------
+// Environment setup
+// ------------------------------------------------------------------------
+chdir(FS);
+set_time_limit(0);
+error_reporting(E_ALL);
+date_default_timezone_set('Asia/Tehran');
+
+// ------------------------------------------------------------------------
+// Load input files and merge 'em horizontally
+// ------------------------------------------------------------------------
+$email = $cli->option('email', FALSE);
+
+// No email set?
+if ( ! $email)
+{
+	$cli->err('No email address is set.');
+	exit('HALTED.');
+}
+
+// Prep and check directory
+$dir_orig = $cli->option('dir', 'tmp');
+$subdir   = $cli->option('subdir', date('ymd'));
+$dir      = realpath(FS . "$dir_orig/$subdir/");
+
+if ( ! is_readable($dir))
+{
+	$cli->err('Specified directory is not readable: ' . $dir);
+	exit('HALTED.');
+}
+
+$cli->info('Checking crawler output directory...')
+	->info('Merging crawler export files...');
+
+// Horizontally merge all export files by issueing a "paste"
+// command. Note that all files need to use "\n" as EOL character
+// or the output won't be desired.
+// @TODO: To make it foolproof fix line-ending chars before "paste"
+exec("paste -d , $dir/*.csv", $output);
+if (empty($output))
+{
+	$cli->err('Found nothing to merge.');
+	exit;
+}
+
+//
+// Parse each line of the merged output file, if needed
+// foreach ($output as $line) {}
+//
+
+// ------------------------------------------------------------------------
+// Dump results to file
+// ------------------------------------------------------------------------
+$output      = implode(EOL, $output);
+$export_path = realpath(FS . $dir_orig) . "/crawler-report_$subdir.csv";
+
+if ( ! file_put_contents($export_path, $output))
+{
+	$cli->err('Failed to export');
+	exit;
+}
+$cli->status("Merged and exported to: $export_path");
+
+// Remove subdir if requested so
+if ($cli->option('rmsubdir', FALSE))
+{
+	rmdir_recursive($dir);
+	$cli->status("Successfully purged subdir directory");
+}
+
+// ------------------------------------------------------------------------
+// Send an email with the report file attached
+// ------------------------------------------------------------------------
+$cli->info("Preparing to send email to [$email]. Please wait...");
+
+// Setup transporter
+$transport = Swift_MailTransport::newInstance();
+
+// Setup message
+$message = Swift_Message::newInstance();
+$message->setTo(array($email => $email, 'lajevardi+logs@gmail.com' => 'Sepehr Lajevardi'));
+$message->setFrom('crawler@takhtegaz.com', 'Crawler Mailer');
+$message->setSubject('Daily Crawler Export for Takhtegaz');
+
+$greeting  = greeting();
+$signature = signature();
+$message->setBody("
+$greeting\n\n
+Attached is the CSV export of \"Takhtegaz Crawler\" for: " . date('D, Y M j') . "\n\n
+$signature
+");
+
+$message->attach(Swift_Attachment::fromPath($export_path));
+
+// Dispatch email
+$mailer = Swift_Mailer::newInstance($transport);
+
+$mailer->send($message)
+	? $cli->eol()->status('Email has been sent successfully.')
+	: $cli->eol()->err('Failed to send email.');
+
+$cli->eol()->writeln('Bye!');
+
+// End of file.

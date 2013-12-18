@@ -1,0 +1,220 @@
+<?php
+/**
+ * Modular and Multi-process web crawler for Takhtegaz.
+ *
+ * Call:
+ * php path/to/crawler --adapter=ADAPTER_NAME --limit=CRAWL_PAGE_LIMIT --output=DUMP_DIR
+ *
+ * Options:
+ * --help: Prints out crawler help
+ * --adapter: Adapter (site) name. Valid adapter names:
+ *     - mashinbazar
+ *     - cartel
+ *     - cario
+ *     - hamshahree
+ *     - onecar
+ *     - bama
+ * --limit:  Page limit to crawl
+ * --all:    Tries to crawl the whole website to extract all desired items instead of new ones.
+ * --output: Output directory (default to PATH/tmp/)
+ * --hello:  Say hello to this crawler, face to face!
+ * --dump:   Dumps extractions to screen instead of file. Ignores --output option.
+ * --multi:  Multi-process mode. Requires: PCNTL, SEMAPHORE, POSIX, PDO and PDO_SQLITE
+ *           driver. Only works on unix-based systems and in CLI environment.
+ *
+ * @package		TakhtegazCrawler
+ * @category	Core
+ * @author		Sepehr Lajevardi <me@sepehr.ws>
+ * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @license		WTFPL - http://www.wtfpl.net/txt/copying/
+ * @version		1.0
+ * @filesource
+ */
+
+// ------------------------------------------------------------------------
+// Init
+// ------------------------------------------------------------------------
+define('PATH', rtrim(dirname(__FILE__), '/') . '/../');
+define('FS',   realpath(PATH) . '/');
+
+// Configs and helpers
+require_once PATH . 'core/configs.php';
+require_once PATH . 'core/helpers.php';
+
+// Vendors
+require_once PATH . 'vendor/cli.php';
+require_once PATH . 'vendor/parser/simple_html_dom.php';
+
+// Instantiate a new CLI interface
+$cli = $GLOBALS['cli'] = new CLI();
+
+// Bootstrap (Load order is important)
+require_once PATH . 'vendor/crawler/libs/PHPCrawler.class.php';
+require_once PATH . 'mods/BaseCrawlerInterface.php';
+require_once PATH . 'mods/BaseCrawler.php';
+
+// Help?
+if ($cli->option('help', FALSE))
+{
+	help_crawler();
+	exit;
+}
+
+// Hello?
+if ($cli->option('hello', FALSE))
+{
+	$cli->skull();
+	exit;
+}
+
+// Announce
+$cli->h1('Takhtegaz Crawler —— Version ' . VERSION . ' // ' . date('D, M j, Y - H:i'));
+$cli->info('Loading requirements, setting up environment...');
+
+// ------------------------------------------------------------------------
+// Environment setup
+// ------------------------------------------------------------------------
+chdir(FS);
+set_time_limit(0);
+error_reporting(E_ALL);
+date_default_timezone_set('Asia/Tehran');
+
+// ------------------------------------------------------------------------
+// Load & Setup Crawler Adapter
+// ------------------------------------------------------------------------
+$adapter = $cli->option('adapter', FALSE);
+$all     = $cli->option('all', FALSE);
+// Ommit --limit if the --all option is set
+$limit   = $all ? 0 : $cli->option('limit', 10);
+
+if ( ! $adapter)
+{
+	trigger_error('No crawler adapter is set.', E_USER_ERROR);
+	exit;
+}
+
+// Load and inistantiate adapter
+$cli->info('Configuring crawler adapter: ' . strtoupper($adapter));
+
+$adapter_class = ucwords($adapter);
+$adapter_class = "{$adapter_class}Crawler";
+require_once "mods/adapters/$adapter_class.php";
+
+if ( ! $crawler = new $adapter_class($limit, $all))
+{
+	trigger_error("Failed to initialize crawler adapter: $adapter_class.", E_USER_ERROR);
+	exit;
+}
+
+// Support for crawlers with multiple starting points
+$operation = array(
+	'links_followed'  => 0,
+	'files_received'  => 0,
+	'bytes_received'  => 0,
+	'process_runtime' => 0,
+	'pool'            => array(),
+	'urls'            => is_array($crawler->_url) ? $crawler->_url : array($crawler->_url),
+);
+
+// ------------------------------------------------------------------------
+// Dispatch
+// ------------------------------------------------------------------------
+foreach ($operation['urls'] as $index => $url)
+{
+	// Update crawler client's URL
+	$crawler->setURL($url);
+	$index == 0 OR $cli->h2('Crawler re-dispatch with different starting URL');
+
+	$cli->info("Uncaging the crawler to: {$url} (port:{$crawler->_port})")->eol();
+
+	// @TODO: Add support for multi-process crawlers
+	if ($cli->option('multi', FALSE))
+	{
+		exit('Multi-process mode is not supported on this machine. Halted.');
+	}
+
+	// Crawl; like no one watches!
+	$crawler->go();
+
+	// Collect stats
+	$report = $crawler->getProcessReport();
+	$operation['links_followed']  += $report->links_followed;
+	$operation['files_received']  += $report->files_received;
+	$operation['bytes_received']  += $report->bytes_received;
+	$operation['process_runtime'] += $report->process_runtime;
+
+	// Merge extraction pool
+	$operation['pool'] = array_merge($operation['pool'], $crawler->get_pool());
+} // foreach
+
+// ------------------------------------------------------------------------
+// Handle results
+// ------------------------------------------------------------------------
+if ( ! empty($operation['pool']))
+{
+	// Remove dupes
+	$operation['pool'] = array_unique(array_filter($operation['pool']));
+
+	// Dump to screen?
+	if ($cli->option('dump', FALSE))
+	{
+		$cli->hr()->writeln(implode(EOL, $operation['pool']));
+	}
+
+	// Dump to file
+	// Structure: [DIR]/[YEAR][MONTH][DAY]/[ADAPTER_NAME].csv
+	else
+	{
+		$file  = $cli->option('output', 'tmp');
+		$file  = realpath(FS . $file) . '/' . date('ymd') . '/';
+
+		// Create subdir if needed
+		file_exists($file) OR mkdir($file, 0755, TRUE);
+
+		// Append adapter name to filename
+		$file .= "$adapter.csv";
+
+		// Maintain append operation for existing files
+		if (file_exists($file) AND $content = file_get_contents($file))
+		{
+			// Read current data
+			$content = explode(EOL, $content);
+			// Merge new data
+			$content = array_merge($content, $operation['pool']);
+			// Remove dupes
+			$content = array_unique(array_filter($content));
+		}
+		else
+		{
+			$content = $operation['pool'];
+		}
+
+		// Prepend adapter name
+		$content = ucwords($adapter) . EOL . implode(EOL, $content) . EOL;
+
+		// Write to file
+		file_put_contents($file, $content)
+			? $cli->hr()->writeln("Output: $file")
+			: $cli->hr()->writeln("Failed to write to file: $file");
+	}
+}
+
+// Eh... nothing?
+else
+{
+	$cli->err('Empty or invalid extraction pool.');
+}
+
+// ------------------------------------------------------------------------
+// Stats
+// ------------------------------------------------------------------------
+$cli->hr()
+	->stat('Total items extracted: ' . number_format(count($operation['pool'])))
+	->stat('Total links crawled:   ' . number_format($operation['links_followed']))
+	->stat('Total pages received:  ' . number_format($operation['files_received']))
+	->stat('Total bytes received:  ' . round($operation['bytes_received'] / 1024, 2) . 'KB')
+	->stat('Total runtime:         ' . round($operation['process_runtime'], 2) . 's')
+	->eol()
+	->writeln('Bye!');
+
+// End of file.
