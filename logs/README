@@ -1,0 +1,1 @@
+CLI logs of `bin/crawler` and `bin/mailer` will be saved here by default. See `CRON.crn` file.
