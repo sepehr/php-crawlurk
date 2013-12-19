@@ -147,13 +147,16 @@ foreach ($operation['urls'] as $index => $url)
 	$dispatch_pool = $crawler->get_pool();
 
 	// Printout overall stats of this crawler dispatch
-	$cli->eol(2)
-		->stat('Items extracted: ' . number_format(count($dispatch_pool)))
-		->stat('Links crawled:   ' . number_format($report->links_followed))
-		->stat('Pages received:  ' . number_format($report->files_received))
-		->stat('Bytes received:  ' . round($report->bytes_received / 1024, 2) . 'KB')
-		->stat('Runtime:         ' . round($report->process_runtime, 2) . 's')
-		->eol();
+	if (count($operation['urls']) > 1)
+	{
+		$cli->eol(2)
+			->stat('Items extracted: ' . number_format(count($dispatch_pool)))
+			->stat('Links crawled:   ' . number_format($report->links_followed))
+			->stat('Pages received:  ' . number_format($report->files_received))
+			->stat('Bytes received:  ' . round($report->bytes_received / 1024, 2) . 'KB')
+			->stat('Runtime:         ' . round($report->process_runtime, 2) . 's')
+			->eol();
+	}
 
 	// Merge extraction pool
 	$operation['pool'] = array_merge($operation['pool'], $dispatch_pool);
