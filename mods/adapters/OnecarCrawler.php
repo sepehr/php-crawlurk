@@ -6,6 +6,12 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
 /**
  * Crawler adapter class for 1car.ir
  *
+ * Crawl all ad links in all listing pages: (no hit limit will crawl all pages)
+ * $ php /path/to/crawler --adapter=onecar [--all]
+ *
+ * Crawl newly added links: (20 hits by default)
+ * $ php /path/to/crawler --adapter=onecar --limit=20
+ *
  * @package		TakhtegazCrawler
  * @category	Adapters
  * @author		Sepehr Lajevardi <me@sepehr.ws>
@@ -39,6 +45,19 @@ class OnecarCrawler extends PhoneExtractorCrawler {
 		// Ad items:
 		'/\/as-[0-9]+/miu',
 	);
+
+	/**
+	 * Regex(es) to match against request referer.
+	 *
+	 * This will let us manually maintain the crawl DEPTH,
+	 * since it's not currently supported by the underlying
+	 * PHPCrawler.
+	 *
+	 * Set to FALSE in order to disable the referer check.
+	 *
+	 * @var string
+	 */
+	protected $_referer = '/\?smode=0&sort=adddate&sort_ad=desc&page=[0-9]+/miu';
 
 	// ------------------------------------------------------------------------
 }

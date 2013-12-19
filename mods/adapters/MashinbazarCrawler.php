@@ -6,6 +6,12 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
 /**
  * Crawler adapter class for mashinbazar.com
  *
+ * Crawl all ad links in all listing pages: (about 3000 items)
+ * $ php /path/to/crawler --adapter=mashinbazar [--all]
+ *
+ * Crawl newly added links: (40 hits by default)
+ * $ php /path/to/crawler --adapter=mashinbazar --limit=40
+ *
  * @package		TakhtegazCrawler
  * @category	Adapters
  * @author		Sepehr Lajevardi <me@sepehr.ws>

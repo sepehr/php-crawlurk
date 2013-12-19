@@ -6,6 +6,12 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
 /**
  * Crawler adapter class for bama.ir
  *
+ * Crawl all ad links in all listing pages: (about 1,000 pages)
+ * $ php /path/to/crawler --adapter=bama --all --limit:0
+ *
+ * Crawl newly added links: (10 pages by default)
+ * $ php /path/to/crawler --adapter=bama --limit=0
+ *
  * @package		TakhtegazCrawler
  * @category	Adapters
  * @author		Sepehr Lajevardi <me@sepehr.ws>
@@ -47,36 +53,69 @@ class BamaCrawler extends PhoneExtractorCrawler {
 	 */
 	protected $_follow = '/http:\/\/(www\.)?bama.ir\/car\/details-[0-9]+-[0-9]+\/.*/miu';
 
+	/**
+	 * Regex(es) to match against request referer.
+	 *
+	 * This will let us manually maintain the crawl DEPTH,
+	 * since it's not currently supported by the underlying
+	 * PHPCrawler.
+	 *
+	 * Set to FALSE in order to disable the referer check.
+	 *
+	 * @var string
+	 */
+	protected $_referer = '/http:\/\/(www\.)?bama.ir\/car\/page=[0-9]+/miu';
+
 	// ------------------------------------------------------------------------
 
 	/**
-	 * Crawler adapter constructor.
+	 * Configures the crawler to crawl new pages.
+	 *
+	 * @param  int $limit Crawler hit limit.
+	 *
+	 * @return void
 	 */
-	public function __construct($limit = FALSE, $all = FALSE)
+	protected function _setup_new($limit = FALSE)
 	{
-		// This check ensures that the URL population will
-		// be performed just once. When the main crawler
-		// script instantiates adapters (like this one)
-		// will pass a $limit parameter. But when called
-		// by the underlying crawler engine (PHPCrawler)
-		// this value is unset.
-		if ($limit OR $all)
+		$this->_populate_urls(10);
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Configures the crawler to crawl all possible pages.
+	 *
+	 * @param  int $limit Crawler hit limit.
+	 *
+	 * @return void
+	 */
+	protected function _setup_all($limit = FALSE)
+	{
+		$this->_populate_urls(967);
+	}
+
+	// ------------------------------------------------------------------------
+	// Internal Helpers
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Dynamically populates $_url array for multi-dispatch operations.
+	 *
+	 * @param  int $limit Crawler hit limit.
+	 *
+	 * @return void
+	 */
+	private function _populate_urls($max)
+	{
+		global $cli;
+
+		// Maximum pages (starting) to hit:
+		$cli->info("It's a multi-dispatch operation. Targeting $max starting pages...");
+
+		for ($i = 1; $i <= $max; $i++)
 		{
-			// Maximum pages (site pagination) to hit:
-			// It's different from Crawler's passed $limit,
-			// it actually indicates how many time the crawler
-			// should be re-dispatched with a new starting URI.
-			$pager_max = $all ? 11 : 3;
-
-			// Sets dynamic starting URLs to crawl
-			for ($i = 1; $i <= $pager_max; $i++)
-			{
-				$this->_url[] = "http://www.bama.ir/car/page=$i";
-			}
+			$this->_url[] = "http://www.bama.ir/car/page=$i";
 		}
-
-		// We're done, let the parents in
-		parent::__construct($limit, $all);
 	}
 
 	// ------------------------------------------------------------------------
