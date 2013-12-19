@@ -57,7 +57,7 @@ class OnecarCrawler extends PhoneExtractorCrawler {
 	 *
 	 * @var string
 	 */
-	protected $_referer = '/\?smode=0&sort=adddate&sort_ad=desc&page=[0-9]+/miu';
+	protected $_referer = '/(http:\/\/(www\.)?1car.ir)?\/a(\?smode=0&sort=adddate&sort_ad=desc&page=[0-9]+)?$/miu';
 
 	// ------------------------------------------------------------------------
 }

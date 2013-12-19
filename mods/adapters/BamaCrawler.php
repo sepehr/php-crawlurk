@@ -95,6 +95,21 @@ class BamaCrawler extends PhoneExtractorCrawler {
 	}
 
 	// ------------------------------------------------------------------------
+
+	/**
+	 * Post-referer-failure callback.
+	 *
+	 * Returning -1 will halt the whole operation.
+	 *
+	 * @return mixed
+	 */
+	protected function _referer_fail()
+	{
+		// Skip current dispatch
+		return -1;
+	}
+
+	// ------------------------------------------------------------------------
 	// Internal Helpers
 	// ------------------------------------------------------------------------
 
