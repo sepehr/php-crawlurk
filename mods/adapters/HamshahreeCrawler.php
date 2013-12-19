@@ -57,7 +57,7 @@ class HamshahreeCrawler extends PhoneExtractorCrawler {
 	 *
 	 * @var string
 	 */
-	protected $_referer = '/http:\/\/(www\.)?hamshahree\.com\/index.php\?MGID=18&cPAG=[0-9]+/miu';
+	protected $_referer = '/http:\/\/(www\.)?hamshahree\.com\/index.php\?MGID=18(&cPAG=[0-9])?+/miu';
 
 	// ------------------------------------------------------------------------
 }
