@@ -125,7 +125,7 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 
 		if ($header->http_status_code != 200)
 		{
-			$cli->err('Remote unavailable: ' . $header->http_status_code);
+			$cli->err('Remote unavailable: ' . $header->http_status_code)->eol();
 			return -1;
 		}
 	}
@@ -151,10 +151,12 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 				->tab()
 				->writeln("Hit:     {$page->url}")
 				->tab()
-				->writeln("Referer: {$page->referer_url}");
+				->writeln("Referer: {$page->referer_url}")
+				->eol();
 
-			// Skip
-			return -1;
+			// Skip current page
+			// Returning -1 will halt the operation
+			return;
 		}
 
 		// Call content processor, if no errors
