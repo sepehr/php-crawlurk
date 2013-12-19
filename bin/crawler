@@ -84,8 +84,7 @@ date_default_timezone_set('Asia/Tehran');
 // ------------------------------------------------------------------------
 $adapter = $cli->option('adapter', FALSE);
 $all     = $cli->option('all', FALSE);
-// Ommit --limit if the --all option is set
-$limit   = $all ? 0 : $cli->option('limit', 10);
+$limit   = $cli->option('limit', 0);
 
 if ( ! $adapter)
 {
@@ -123,7 +122,9 @@ foreach ($operation['urls'] as $index => $url)
 {
 	// Update crawler client's URL
 	$crawler->setURL($url);
-	$index == 0 OR $cli->h2('Crawler re-dispatch with different starting URL');
+	$index == 0
+		? $cli->eol()
+		: $cli->h2('Crawler re-dispatch with different starting URL');
 
 	$cli->info("Uncaging the crawler to: {$url} (port:{$crawler->_port})")->eol();
 
@@ -143,8 +144,19 @@ foreach ($operation['urls'] as $index => $url)
 	$operation['bytes_received']  += $report->bytes_received;
 	$operation['process_runtime'] += $report->process_runtime;
 
+	$dispatch_pool = $crawler->get_pool();
+
+	// Printout overall stats of this crawler dispatch
+	$cli->eol(2)
+		->stat('Items extracted: ' . number_format(count($dispatch_pool)))
+		->stat('Links crawled:   ' . number_format($report->links_followed))
+		->stat('Pages received:  ' . number_format($report->files_received))
+		->stat('Bytes received:  ' . round($report->bytes_received / 1024, 2) . 'KB')
+		->stat('Runtime:         ' . round($report->process_runtime, 2) . 's')
+		->eol();
+
 	// Merge extraction pool
-	$operation['pool'] = array_merge($operation['pool'], $crawler->get_pool());
+	$operation['pool'] = array_merge($operation['pool'], $dispatch_pool);
 } // foreach
 
 // ------------------------------------------------------------------------
