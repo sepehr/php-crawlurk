@@ -198,8 +198,6 @@ if ( ! empty($operation['pool']))
 			$content = explode(EOL, $content);
 			// Merge new data
 			$content = array_merge($content, $operation['pool']);
-			// Remove dupes
-			$content = array_unique(array_filter($content));
 		}
 		else
 		{
@@ -207,7 +205,10 @@ if ( ! empty($operation['pool']))
 		}
 
 		// Prepend adapter name
-		$content = ucwords($adapter) . EOL . implode(EOL, $content) . EOL;
+		array_unshift($content, ucwords($adapter));
+		// Remove dupes
+		$content = array_unique(array_filter($content));
+		$content = implode(EOL, $content) . EOL;
 
 		// Write to file
 		file_put_contents($file, $content)
