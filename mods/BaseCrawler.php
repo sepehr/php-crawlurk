@@ -53,6 +53,19 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 	 */
 	protected $_follow = array();
 
+	/**
+	 * Regex(es) to match against request referer.
+	 *
+	 * This will let us manually maintain the crawl DEPTH,
+	 * since it's not currently supported by the underlying
+	 * PHPCrawler.
+	 *
+	 * Set to FALSE in order to disable the referer check.
+	 *
+	 * @var string
+	 */
+	protected $_referer = FALSE;
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -66,19 +79,29 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 			exit;
 		}
 
+		// Call a custom configurator based on how we're instructed to perform
+		if ($all)
+		{
+			$this->_setup_all($limit);
+		}
+		// This check ensures that the URL population will
+		// be performed just once. When the main crawler
+		// script instantiates adapters will pass a $limit
+		// parameter. But when called by the underlying
+		// crawler engine (PHPCrawler) this value is FALSE.
+		else if ($limit !== FALSE)
+		{
+			$this->_setup_new($limit);
+		}
+
 		// Let the parent initializes
 		parent::__construct();
 
-		// If it's set to crawl all pages, call a custom configurator
-		// method. So that derived adapters can implement their own
-		// magic.
-		$all AND $this->_setup_all();
+		// Set crawler page limit, if passed
+		$limit === FALSE OR $this->setPageLimit($limit);
 
 		// Configure the crawler
 		$this->_configure();
-
-		// Set crawler page limit, if passed
-		$limit AND $this->setPageLimit($limit);
 	}
 
 	// ------------------------------------------------------------------------
@@ -120,6 +143,19 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 	{
 		global $cli;
 		$this->_page = $page;
+
+		// Check referrer rules, if it's set
+		if ($this->_referer AND $page->referer_url AND ! preg_match($this->_referer, $page->referer_url))
+		{
+			$cli->info('Skiping to maintain the depth. Referer check failed upon:')
+				->tab()
+				->writeln("Hit:     {$page->url}")
+				->tab()
+				->writeln("Referer: {$page->referer_url}");
+
+			// Skip
+			return -1;
+		}
 
 		// Call content processor, if no errors
 		if ($page->error_code === 0)
@@ -169,7 +205,7 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 	public function error($error_code, $error_string)
 	{
 		global $cli;
-		$cli->err("$error_string [code: $error_code]")->eol();
+		$cli->err("$error_string [code:$error_code]")->eol();
 
 		//
 		// Derived adapter classes should extend this method to implement
@@ -308,13 +344,13 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 			$this->_page->file = substr($this->_page->file, 0, 15)	. ' ... ' . substr($this->_page->file, 45, 10) . ' [TRIMMED]';
 		}
 
-		$cli->info("Hit: \"{$this->_page->path}{$this->_page->file}{$this->_page->query}\" (HTTP 1.1 / {$this->_page->http_status_code})")
+		$cli->info("Hit: \"{$this->_page->path}{$this->_page->file}{$this->_page->query}\" (HTTP/1.1 {$this->_page->http_status_code})")
 			->tab()
 			// Total bytes received:
 			->writeln('Bytes received: ' . round($this->_page->bytes_received / 1024, 2). 'KB')
 			->tab()
 			// Average transfer rate:
-			->writeln('Transfer rate: '  . round($this->_page->data_transfer_rate / 1024, 2) . ' KB/s')
+			->writeln('Transfer rate: '  . round($this->_page->data_transfer_rate / 1024, 2) . 'KB/s')
 			->tab()
 			// Total runtime:
 			->writeln('Runtime: '        . round($this->_page->data_transfer_time, 2) . 's');
@@ -363,13 +399,32 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 	/**
 	 * Configures the crawler to crawl all possible pages.
 	 *
+	 * @param  int $limit Crawler hit limit.
+	 *
 	 * @return void
 	 */
-	protected function _setup_all()
+	protected function _setup_all($limit = FALSE)
 	{
 		//
 		// Derived adapters may override this to configure the client
 		// to crawl all pages.
+		//
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Configures the crawler to crawl new pages.
+	 *
+	 * @param  int $limit Crawler hit limit.
+	 *
+	 * @return void
+	 */
+	protected function _setup_new($limit = FALSE)
+	{
+		//
+		// Derived adapters may override this to configure the client
+		// to crawl new pages.
 		//
 	}
 

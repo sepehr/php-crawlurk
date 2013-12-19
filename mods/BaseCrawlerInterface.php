@@ -19,6 +19,7 @@ interface BaseCrawlerInterface {
 	// $_pool;
 	// $_content;
 	// $_follow;
+	// $_referrer;
 
 	// ------------------------------------------------------------------------
 	// Crawler Adapter API
