@@ -9,8 +9,8 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
  * Crawl all ad links in all listing pages: (about 150 pages, 10 ads each)
  * $ php /path/to/crawler --adapter=hamshahree [--all]
  *
- * Crawl newly added links: (50 hits by default)
- * $ php /path/to/crawler --adapter=hamshahree --limit=50
+ * Crawl newly added links: (100 hits by default)
+ * $ php /path/to/crawler --adapter=hamshahree --limit=100
  *
  * @package		Crawlurk
  * @category	Adapters
