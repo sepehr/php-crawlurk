@@ -1,6 +1,6 @@
 <?php
 /**
- * Modular and Multi-process web crawler for Takhtegaz.
+ * Modular and Multi-process web crawler for PHP.
  *
  * Call:
  * php path/to/crawler --adapter=ADAPTER_NAME --limit=CRAWL_PAGE_LIMIT --output=DUMP_DIR
@@ -22,10 +22,10 @@
  * --multi:  Multi-process mode. Requires: PCNTL, SEMAPHORE, POSIX, PDO and PDO_SQLITE
  *           driver. Only works on unix-based systems and in CLI environment.
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Core
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  * @version		1.0
  * @filesource
@@ -68,7 +68,7 @@ if ($cli->option('hello', FALSE))
 }
 
 // Announce
-$cli->h1('Takhtegaz Crawler —— Version ' . VERSION . ' // ' . date('D, M j, Y - H:i'));
+$cli->h1('Crawlurk —— Version ' . VERSION . ' // ' . date('D, M j, Y - H:i'));
 $cli->info('Loading requirements, setting up environment...');
 
 // ------------------------------------------------------------------------

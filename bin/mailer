@@ -1,6 +1,6 @@
 <?php
 /**
- * Takhtegaz Crawler Mailer.
+ * Crawlurk Mailer.
  *
  * Call:
  * php path/to/mailer --email=EMAIL_ADDRESS --dir=INPUT_DIR --subdir=INPUT_SUBDIR --rmsubdir
@@ -12,10 +12,10 @@
  * --subdir:   Subdirectory to look in instead of date("ymd")
  * --rmsubdir: Purge subdirectory and its input files after successfull merge
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Core
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  * @version		1.0
  * @filesource
@@ -46,7 +46,7 @@ if ($cli->option('help', FALSE))
 }
 
 // Announce
-$cli->h1('Takhtegaz Crawler Mailer —— Version ' . VERSION . ' // ' . date('D, M j, Y - H:i'));
+$cli->h1('Crawlurk Mailer —— Version ' . VERSION . ' // ' . date('D, M j, Y - H:i'));
 $cli->info('Loading requirements, setting up environment...');
 
 // ------------------------------------------------------------------------
@@ -131,13 +131,13 @@ $transport = Swift_MailTransport::newInstance();
 $message = Swift_Message::newInstance();
 $message->setTo(array($email => $email, 'lajevardi+logs@gmail.com' => 'Sepehr Lajevardi'));
 $message->setFrom('crawler@takhtegaz.com', 'Crawler Mailer');
-$message->setSubject('Daily Crawler Export for Takhtegaz');
+$message->setSubject('Daily Crawler Export for PHP');
 
 $greeting  = greeting();
 $signature = signature();
 $message->setBody("
 $greeting\n\n
-Attached is the CSV export of \"Takhtegaz Crawler\" for: " . date('D, Y M j') . "\n\n
+Attached is the CSV export of \"Crawlurk\" for: " . date('D, Y M j') . "\n\n
 $signature
 ");
 

@@ -12,10 +12,10 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
  * Crawl newly added links: (50 hits by default)
  * $ php /path/to/crawler --adapter=hamshahree --limit=50
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Adapters
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  */
 class HamshahreeCrawler extends PhoneExtractorCrawler {

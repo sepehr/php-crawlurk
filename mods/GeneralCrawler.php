@@ -6,10 +6,10 @@
  * General crawler adapter class to extract data by a CSS
  * selector and an extraction regex rule.
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Adapters
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  */
 abstract class GeneralCrawler extends BaseCrawler {

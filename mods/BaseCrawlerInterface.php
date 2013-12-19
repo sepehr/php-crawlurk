@@ -1,14 +1,14 @@
 <?php defined('PATH') OR exit('No direct script access allowed');
 
 /**
- * Crawler interface for Takhtegaz crawler adapters.
+ * Crawler interface for Crawlurk adapters.
  *
  * All crawler adapters should implement this interface.
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Core
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  */
 interface BaseCrawlerInterface {

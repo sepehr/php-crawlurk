@@ -1,11 +1,11 @@
 <?php defined('PATH') OR exit('No direct script access allowed');
 /**
- * Procedural helpers for Takhtegaz Crawler.
+ * Procedural helpers for Crawlurk.
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Core
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  * @filesource
  */
@@ -67,7 +67,7 @@ if ( ! function_exists('help_crawler'))
 			// Name:
 			->writeln('NAME')
 			->tab()
-			->writeln('Takhtegaz Crawler')
+			->writeln('Crawlurk')
 			->eol()
 			// Synopsis:
 			->writeln('SYNOPSIS')
@@ -77,7 +77,7 @@ if ( ! function_exists('help_crawler'))
 			// Description:
 			->writeln('DESCRIPTION')
 			->tab()
-			->writeln('Modular and Multi-process web crawler for Takhtegaz')
+			->writeln('Modular and Multi-process web crawler for PHP')
 			->eol()
 			// Options:
 			->writeln('OPTIONS')
@@ -139,7 +139,7 @@ if ( ! function_exists('help_mailer'))
 			// Name:
 			->writeln('NAME')
 			->tab()
-			->writeln('Takhtegaz Crawler Mailer')
+			->writeln('Crawlurk Mailer')
 			->eol()
 			// Synopsis:
 			->writeln('SYNOPSIS')

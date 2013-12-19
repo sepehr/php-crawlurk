@@ -1,12 +1,12 @@
 <?php defined('PATH') OR exit('No direct script access allowed');
 
 /**
- * Base Crawler class for Takhtegaz.
+ * Base Crawler class for PHP.
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Core
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  */
 abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {

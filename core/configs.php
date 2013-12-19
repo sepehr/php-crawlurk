@@ -1,11 +1,11 @@
 <?php defined('PATH') OR exit('No direct script access allowed');
 /**
- * General configs for Takhtegaz Crawler.
+ * General configs for Crawlurk.
  *
- * @package		TakhtegazCrawler
+ * @package		Crawlurk
  * @category	Core
  * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2013 www.takhtegaz.com
+ * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  * @filesource
  */

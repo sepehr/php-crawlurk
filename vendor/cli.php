@@ -738,7 +738,7 @@ class Cli {
 	public function skull()
 	{
 		$this->eol(2);
-		$this->write('                  _,.TAKHTEGAZ.,_                     __,.CRAWLER.,_');
+		$this->write('                  _,..CRAWLURK.,_                     __,.CRAWLER.,_');
 		$this->write('                 ,-~           ~-.                  ,-~           ~-.');
 		$this->write('                ,^___           ___^.              ,^___           ___^.');
 		$this->write('              /~"   ~"    .   "~   "~\\            /~"   ~"   .   "~   "~\\');
