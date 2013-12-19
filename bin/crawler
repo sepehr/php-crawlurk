@@ -120,8 +120,9 @@ $operation = array(
 // ------------------------------------------------------------------------
 foreach ($operation['urls'] as $index => $url)
 {
-	// Update crawler client's URL
 	$crawler->setURL($url);
+	$crawler->flush_pool();
+
 	$index == 0
 		? $cli->eol()
 		: $cli->h2('Crawler re-dispatch with different starting URL');
@@ -160,6 +161,7 @@ foreach ($operation['urls'] as $index => $url)
 
 	// Merge extraction pool
 	$operation['pool'] = array_merge($operation['pool'], $dispatch_pool);
+
 } // foreach
 
 // ------------------------------------------------------------------------
