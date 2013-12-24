@@ -91,9 +91,7 @@ class BamaCrawler extends PhoneExtractorCrawler {
 	 */
 	protected function _setup_all($limit = FALSE)
 	{
-		// Old pages are already crawled
-		// $this->_populate_urls(967);
-		$this->_populate_urls(100);
+		$this->_populate_urls(967);
 	}
 
 	// ------------------------------------------------------------------------
