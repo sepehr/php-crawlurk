@@ -9,7 +9,7 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
  * Crawl all ad links in all listing pages: (about 2500 items)
  * $ php /path/to/crawler --adapter=mashinbazar --all
  *
- * Crawl newly added links: (40 hits by default)
+ * Crawl newly added links: (100 hits by default)
  * $ php /path/to/crawler --adapter=mashinbazar --limit=1
  *
  * @package		Crawlurk
@@ -25,7 +25,7 @@ class MashinbazarCrawler extends PhoneExtractorCrawler {
 	 *
 	 * @var string
 	 */
-	public $_url = 'http://www.mashinbazar.com/search.php?limit=200';
+	public $_url = 'http://www.mashinbazar.com/search.php?limit=50';
 
 	/**
 	 * CSS selector.
@@ -96,7 +96,7 @@ class MashinbazarCrawler extends PhoneExtractorCrawler {
 	protected function _setup_all($limit = FALSE)
 	{
 		// Load all records in one page
-		$this->_url = 'http://www.mashinbazar.com/search.php?limit=2500';
+		$this->_url = 'http://www.mashinbazar.com/search.php?limit=3500';
 		// Set limit to 1
 		$this->setPageLimit(1);
 	}
