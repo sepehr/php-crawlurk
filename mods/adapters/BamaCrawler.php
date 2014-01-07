@@ -6,11 +6,11 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
 /**
  * Crawler adapter class for bama.ir
  *
- * Crawl all ad links in all listing pages: (about 1,000 pages)
- * $ php /path/to/crawler --adapter=bama --all --limit:0
+ * Crawl all ad links in all listing pages:
+ * $ php /path/to/crawler --adapter=bama --all [--limit:0]
  *
- * Crawl newly added links: (10 pages by default)
- * $ php /path/to/crawler --adapter=bama --limit=0
+ * Crawl newly added links:
+ * $ php /path/to/crawler --adapter=bama [--limit=0]
  *
  * @package		Crawlurk
  * @category	Adapters
@@ -77,7 +77,7 @@ class BamaCrawler extends PhoneExtractorCrawler {
 	 */
 	protected function _setup_new($limit = FALSE)
 	{
-		$this->_populate_urls(5);
+		$this->_populate_urls(100);
 	}
 
 	// ------------------------------------------------------------------------

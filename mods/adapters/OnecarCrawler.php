@@ -6,10 +6,10 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
 /**
  * Crawler adapter class for 1car.ir
  *
- * Crawl all ad links in all listing pages: (no hit limit will crawl all pages)
+ * Crawl all ad links in all listing pages:
  * $ php /path/to/crawler --adapter=onecar [--all]
  *
- * Crawl newly added links: (20 hits by default)
+ * Crawl newly added links:
  * $ php /path/to/crawler --adapter=onecar --limit=20
  *
  * @package		Crawlurk
