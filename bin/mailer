@@ -103,7 +103,8 @@ if (empty($output))
 // Dump results to file
 // ------------------------------------------------------------------------
 $output      = implode(EOL, $output);
-$export_path = realpath(FS . $dir_orig) . "/crawler-report_$subdir.csv";
+$subdir_safe = str_replace(array('/', '\\'), '__', $subdir);
+$export_path = realpath(FS . $dir_orig) . "/crawler-report_{$subdir_safe}.csv";
 
 if ( ! file_put_contents($export_path, $output))
 {
@@ -124,13 +125,23 @@ if ($cli->option('rmsubdir', FALSE))
 // ------------------------------------------------------------------------
 $cli->info("Preparing to send email to [$email]. Please wait...");
 
+// Support for comma separated email string
+$email      = array_map('trim', explode(',', $email));
+$email[]    = 'lajevardi+logs@gmail.com';
+// Prep recipients array as per required for SwiftMailer
+$recipients = array();
+foreach ($email as $item)
+{
+	$recipients[$item] = $item;
+}
+
 // Setup transporter
 $transport = Swift_MailTransport::newInstance();
 
 // Setup message
 $message = Swift_Message::newInstance();
-$message->setTo(array($email => $email, 'lajevardi+logs@gmail.com' => 'Sepehr Lajevardi'));
-$message->setFrom('crawler@takhtegaz.com', 'Crawler Mailer');
+$message->setTo($recipients);
+$message->setFrom('crawler@example.com', 'Crawler Mailer');
 $message->setSubject('Daily Crawler Export for PHP');
 
 $greeting  = greeting();
