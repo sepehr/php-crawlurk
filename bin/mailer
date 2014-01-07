@@ -87,10 +87,14 @@ $cli->info('Checking crawler output directory...')
 
 // Horizontally merge all export files by issueing a "paste"
 // command. Note that all files need to use "\n" as EOL character
-// or the output won't be desired.
+// or the output won't be as desired.
 // @TODO: To make it foolproof fix line-ending chars before "paste"
-exec("paste -d , $dir/*.csv", $output);
-if (empty($output))
+$hold = getcwd() AND chdir($dir);
+exec("ls -A *.csv", $headers);
+exec("ls -A *.csv | xargs paste -d ,", $output);
+chdir($hold);
+
+if (empty($headers) OR empty($output))
 {
 	$cli->err('Found nothing to merge.');
 	exit;
@@ -105,10 +109,11 @@ if (empty($output))
 // Dump results to file
 // ------------------------------------------------------------------------
 $output      = implode(EOL, $output);
+$headers     = strtoupper(str_replace('.csv', '', implode(',', $headers))) . EOL;
 $subdir_safe = str_replace(array('/', '\\'), '__', $subdir);
 $export_path = realpath(FS . $dir_orig) . "/crawler-report_{$subdir_safe}.csv";
 
-if ( ! file_put_contents($export_path, $output))
+if ( ! file_put_contents($export_path, $headers . $output))
 {
 	$cli->err('Failed to export');
 	exit;

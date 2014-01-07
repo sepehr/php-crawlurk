@@ -204,8 +204,6 @@ if ( ! empty($operation['pool']))
 			$content = $operation['pool'];
 		}
 
-		// Prepend adapter name
-		array_unshift($content, ucwords($adapter));
 		// Remove dupes
 		$content = array_unique(array_filter($content));
 		$content = implode(EOL, $content) . EOL;
