@@ -196,7 +196,7 @@ if ( ! function_exists('signature'))
 			'Fool', 'Poor', 'Wealthy', 'Bossy', 'Cold',
 		);
 
-		return '—— ' . $feelings[array_rand($feelings)] . ' Crawler Agent あ';
+		return '— ' . $feelings[array_rand($feelings)] . ' Crawler Agent あ';
 	}
 }
 
