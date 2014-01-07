@@ -71,7 +71,9 @@ if ( ! $email)
 
 // Prep and check directory
 $dir_orig = $cli->option('dir', 'tmp');
-$subdir   = $cli->option('subdir', date('ymd'));
+// By default mailer looks for crawler export files of
+// yesterday. Change this or set it via --subdir option:
+$subdir   = $cli->option('subdir', date('ymd', strtotime('yesterday')));
 $dir      = realpath(FS . "$dir_orig/$subdir/");
 
 if ( ! is_readable($dir))
@@ -144,11 +146,14 @@ $message->setTo($recipients);
 $message->setFrom('crawler@example.com', 'Crawler Mailer');
 $message->setSubject('Daily Crawler Export for PHP');
 
-$greeting  = greeting();
-$signature = signature();
+$greeting    =  greeting();
+$signature   =  signature();
+$report_date =  $cli->option('subdir', FALSE);
+$report_date OR $report_date = date('D, Y M j', strtotime('yesterday'));
+
 $message->setBody("
-$greeting\n\n
-Attached is the CSV export of \"Crawlurk\" for: " . date('D, Y M j') . "\n\n
+$greeting\n
+Attached is the CSV export of \"Crawlurk\" for: " . $report_date . "\n\n
 $signature
 ");
 
