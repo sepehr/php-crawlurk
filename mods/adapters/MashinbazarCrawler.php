@@ -1,10 +1,7 @@
 <?php defined('PATH') OR exit('No direct script access allowed');
 
-// Include the PhoneExtractorCrawler
-require_once PATH . 'mods/PhoneExtractorCrawler.php';
-
 /**
- * Crawler adapter class for mashinbazar.com
+ * Crawler adapter class for new mashinbazar.com
  *
  * Crawl all ad links in all listing pages:
  * $ php /path/to/crawler --adapter=mashinbazar --all
@@ -18,87 +15,54 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
  * @copyright	Copyright (c) Sepehr Lajevardi
  * @license		WTFPL - http://www.wtfpl.net/txt/copying/
  */
-class MashinbazarCrawler extends PhoneExtractorCrawler {
+class MashinbazarCrawler extends BaseCrawler {
 
 	/**
-	 * URL to crawl.
+	 * URLs to crawl.
 	 *
-	 * @var string
+	 * Setting multiple starting URLs because the website pager
+	 * works via AJAX and the Crawler engine could not figureout
+	 * next page links.
+	 *
+	 * The callee must instantiate this crawler per each URL.
+	 *
+	 * @var array
 	 */
-	public $_url = 'http://www.mashinbazar.com/search.php?limit=100';
+	public $_url = 'http://www.mashinbazar.com/search/json/a:list';
 
 	/**
 	 * CSS selector.
 	 *
 	 * @var string
 	 */
-	protected $_selector = '.search-result-base .search-result-row .text-base .text';
+	protected $_selector = '.box1 .box1_list .adsCars.clearfix:nth-child(3) .col-lg-8 b';
 
 	/**
 	 * URI follow regex rule.
 	 *
 	 * @var string
 	 */
-	protected $_follow = '/search.php\?page=[0-9]+&limit=[0-9]+/';
+	protected $_follow = '/\\"\\\/ads\\\/view\\\/id:\d+\\"/miu';
+	// protected $_follow = '/(http:\/\/(www\.)?mashinbazar.com\/search\/json\/)?$/miu';
+
+	/**
+	 * Regex(es) to match against request referer.
+	 *
+	 * This will let us manually maintain the crawl DEPTH,
+	 * since it's not currently supported by the underlying
+	 * PHPCrawler.
+	 *
+	 * Set to FALSE in order to disable the referer check.
+	 *
+	 * @var string
+	 */
+	//protected $_referer = '/(http:\/\/(www\.)?cartel.ir)?\/ajax.php\?search=0&page=[1-9]+/miu';
 
 	// ------------------------------------------------------------------------
 
-	/**
-	 * Processes crawled page content.
-	 *
-	 * Overriding parent method to apply custom extraction logic.
-	 * This implementation avoids the DOM parsing extra load by
-	 * applying the regex against the whole fetched content.
-	 *
-	 * @return mixed
-	 */
 	public function process()
 	{
-		global $cli;
 
-		// Print out crawl stats for this step
-		$this->_crawl_step_stats();
-
-		// Parse the fetched content
-		if ( ! empty($this->_content))
-		{
-			$count = 0;
-
-			// Extract desired data from element's text
-			if ($extracted = $this->_extract_regex($this->_content, $this->_regex))
-			{
-				// Remove dups
-				$extracted   = array_unique(array_filter($extracted));
-				// Increase count
-				$count      += count($extracted);
-				// And merge up in the pool
-				$this->_pool = array_merge($this->_pool, $extracted);
-			}
-
-			// How many items have been extracted?
-			$cli->tab()->writeln("$count item(s) extracted.")->eol();
-			return TRUE;
-		}
-
-		$cli->err('DOM parser failed.')->eol();
-		return FALSE;
-	}
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Configures the crawler to crawl all possible pages.
-	 *
-	 * @param  int $limit Crawler hit limit.
-	 *
-	 * @return void
-	 */
-	protected function _setup_all($limit = FALSE)
-	{
-		// Load all records in one page
-		$this->_url = 'http://www.mashinbazar.com/search.php?limit=3500';
-		// Set limit to 1
-		$this->setPageLimit(1);
 	}
 
 	// ------------------------------------------------------------------------
