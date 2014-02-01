@@ -6,7 +6,7 @@ require_once PATH . 'mods/PhoneExtractorCrawler.php';
 /**
  * Crawler adapter class for cartel.ir
  *
- * * Crawl all ad links in all listing pages:
+ * Crawl all ad links in all listing pages:
  * $ php /path/to/crawler --adapter=cartel --all [--limit=0]
  *
  * Crawl newly added links:
