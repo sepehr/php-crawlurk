@@ -174,8 +174,10 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 		if ($page->error_code === 0)
 		{
 			$this->_content = $page->content;
-			$this->process();
+			$this->_is_first_page($page->url) ? $this->process_first() : $this->process();
 		}
+
+		// Errors!
 		else
 		{
 			$this->error($page->error_code, $page->error_string);
@@ -197,7 +199,24 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 	public function process()
 	{
 		global $cli;
-		$cli->info('Searching for treasures...');
+		$cli->warn('You need to implement process() in your adapter in order to process the crawled page content.');
+
+		//
+		// Derived adapter classes should extend this method to implement
+		// their own logic.
+		//
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * It's like the process() but only for the first page.
+	 *
+	 * @return mixed
+	 */
+	public function process_first()
+	{
+		$this->process();
 
 		//
 		// Derived adapter classes should extend this method to implement
@@ -467,6 +486,34 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 		// Derived adapters may override this to alter post-referer-failure
 		// behavior of the crawler.
 		//
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Detects if the crawled page is among the starting URLs or not.
+	 *
+	 * @param  string $url URL to check.
+	 *
+	 * @return bool
+	 */
+	protected function _is_first_page($url)
+	{
+		return is_array($this->_url) ? in_array($url, $this->_url) : $url == $this->_url;
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Adds a single URL to the LinkCache of the crawler client.
+	 *
+	 * @param  string $url URL to be added.
+	 *
+	 * @return bool
+	 */
+	protected function _add_url($url)
+	{
+		return $this->LinkCache->addUrl(new PHPCrawlerURLDescriptor($url));
 	}
 
 	// ------------------------------------------------------------------------
