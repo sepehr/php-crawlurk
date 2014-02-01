@@ -9,7 +9,6 @@
 40 07 * * * /opt/crawler-rahnama.sh
 45 07 * * * /opt/crawler-istgah.sh
 
-
 ## Crawler worker
 ## Additional options are available, see bin/crawler --help
 ## ------------------------------------------------------------------------
