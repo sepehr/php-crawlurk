@@ -33,12 +33,19 @@
 54 18 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=hamshahree --limit=300 >> /opt/crawlurk/logs/crawler/hamshahree-$(date +"\%F").log 2>&1
 54 21 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=hamshahree --limit=300 >> /opt/crawlurk/logs/crawler/hamshahree-$(date +"\%F").log 2>&1
 
-# Mashinbazar (10 pages)
-06 10 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
-06 13 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
-06 16 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
-06 19 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
-06 21 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
+# Mashinbazar (10 pages) (OLD)
+#06 10 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazarold --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazarold-$(date +"\%F").log 2>&1
+#06 13 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazarold --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazarold-$(date +"\%F").log 2>&1
+#06 16 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazarold --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazarold-$(date +"\%F").log 2>&1
+#06 19 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazarold --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazarold-$(date +"\%F").log 2>&1
+#06 21 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazarold --limit=1 >> /opt/crawlurk/logs/crawler/mashinbazarold-$(date +"\%F").log 2>&1
+
+# Mashinbazar (10 pages) (NEW)
+06 10 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=31 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
+06 13 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=31 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
+06 16 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=31 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
+06 19 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=31 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
+06 21 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=mashinbazar --limit=31 >> /opt/crawlurk/logs/crawler/mashinbazar-$(date +"\%F").log 2>&1
 
 # Onecar (5 pages)
 18 10 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=onecar --limit=50 >> /opt/crawlurk/logs/crawler/onecar-$(date +"\%F").log 2>&1
