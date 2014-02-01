@@ -16,6 +16,7 @@ interface BaseCrawlerInterface {
 	// $_url;
 	// $_port;
 	// $_page;
+	// $_post;
 	// $_pool;
 	// $_content;
 	// $_follow;

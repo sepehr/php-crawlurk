@@ -54,6 +54,13 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 	protected $_follow = array();
 
 	/**
+	 * Array of URI regexes and associated POST data.
+	 *
+	 * @var array
+	 */
+	protected $_post = array();
+
+	/**
 	 * Regex(es) to match against request referer.
 	 *
 	 * This will let us manually maintain the crawl DEPTH,
@@ -307,6 +314,15 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 
 		// Do not crawl assets by default, we do hate them
 		$this->addURLFilterRule('/(jpg|jpeg|gif|png|bmp|css|js)$/ i');
+
+		// Set associated POST data if any
+		if ( ! empty($this->_post))
+		{
+			foreach ($this->_post as $pattern => $data)
+			{
+				$this->addPostData($pattern, $data);
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------------
