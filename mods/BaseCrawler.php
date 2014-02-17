@@ -315,8 +315,8 @@ abstract class BaseCrawler extends PHPCrawler implements BaseCrawlerInterface {
 		// Follow redirects
 		$this->setFollowRedirects(TRUE);
 		// Set timeouts
-		$this->setStreamTimeout(13);
-		$this->setConnectionTimeout(20);
+		$this->setStreamTimeout(20);
+		$this->setConnectionTimeout(25);
 		// Set User-Agent
 		$this->setUserAgentString('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.14 Safari/537.36');
 
