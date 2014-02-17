@@ -25,7 +25,7 @@ class KhodroiranCrawler extends PhoneExtractorCrawler {
 	 *
 	 * @var string
 	 */
-	public $_url = 'http://www.khodroiran.com/pageLimit/50/sn/advancedSearch/search/1/pn/1/sortBy/publish_datetime/st/DESC';
+	public $_url = 'http://www.khodroiran.com/pageLimit/100/sn/advancedSearch/search/1/pn/1/sortBy/publish_datetime/st/DESC';
 
 	/**
 	 * CSS selector.
@@ -80,8 +80,8 @@ class KhodroiranCrawler extends PhoneExtractorCrawler {
 			return TRUE;
 		}
 
-		$cli->err('DOM parser failed.')->eol();
-		return FALSE;
+		$cli->err('DOM parser failed, empty content.')->eol();
+		return TRUE; // Move forward if possible
 	}
 
 	// ------------------------------------------------------------------------
@@ -96,8 +96,7 @@ class KhodroiranCrawler extends PhoneExtractorCrawler {
 	protected function _setup_all($limit = FALSE)
 	{
 		// Load all records in one page
-		$this->_url = 'http://www.khodroiran.com/pageLimit/200/sn/advancedSearch/search/1/pn/1/sortBy/publish_datetime/st/DESC';
-		// Set limit to 10 (about 10 pages)
+		$this->_url = 'http://www.khodroiran.com/pageLimit/300/sn/advancedSearch/search/1/pn/1/sortBy/publish_datetime/st/DESC';
 		$this->setPageLimit(10);
 	}
 
