@@ -54,6 +54,13 @@
 18 19 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=onecar --limit=50 >> /opt/crawlurk/logs/crawler/onecar-$(date +"\%F").log 2>&1
 18 21 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=onecar --limit=50 >> /opt/crawlurk/logs/crawler/onecar-$(date +"\%F").log 2>&1
 
+# Khodroiran (1 page, 50 items)
+30 10 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=khodroiran --limit=1 >> /opt/crawlurk/logs/crawler/khodroiran-$(date +"\%F").log 2>&1
+30 13 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=khodroiran --limit=1 >> /opt/crawlurk/logs/crawler/khodroiran-$(date +"\%F").log 2>&1
+30 16 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=khodroiran --limit=1 >> /opt/crawlurk/logs/crawler/khodroiran-$(date +"\%F").log 2>&1
+30 19 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=khodroiran --limit=1 >> /opt/crawlurk/logs/crawler/khodroiran-$(date +"\%F").log 2>&1
+30 21 * * * /usr/bin/php /opt/crawlurk/bin/crawler --adapter=khodroiran --limit=1 >> /opt/crawlurk/logs/crawler/khodroiran-$(date +"\%F").log 2>&1
+
 ## Mailer worker
 ## Additional options are available, see bin/mailer --help
 ## A copy will be send to "lajevardi+logs@gmail.com", it's harcoded. see bin/mailer
